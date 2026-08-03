@@ -1,0 +1,37 @@
+
+{% extends "base.html" %}
+{% block body_class %}manual-page{% endblock %}
+{% block content %}
+<h1 class = manual-h1>Manual Blood Test Entry</h1>
+<p class="subtitle">Enter your CBC report values accurately</p>
+
+<form action="/predict" method="post" class="form-grid">
+    <div class="input-row">
+        <input type="number" step="any" name="hb" placeholder="Hemoglobin (Hb) g/dL *" required>
+        <input type="number" step="any" name="rbc" placeholder="RBC 10⁶/µL *" required>
+        <input type="number" step="any" name="mcv" placeholder="MCV fL *" required>
+    </div>
+    <div class="input-row">
+        <input type="number" step="any" name="mch" placeholder="MCH pg *" required>
+        <input type="number" step="any" name="mchc" placeholder="MCHC g/dL *" required>
+        <input type="number" step="any" name="rdw" placeholder="RDW % *" required>
+    </div>
+    <div class="input-row">
+        <input type="number" step="any" name="age" placeholder="Age years *" required>
+        <select name="gender" class="select-input" required>
+            <option value="">Select Gender *</option>
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+        <button type="submit" class="analyze-btn full-width">Get Diagnosis</button>
+    </div>
+</form>
+
+{% if message %}
+    <div class="error">{{ message }}</div>
+{% endif %}
+
+<div class="back-link">
+    <a href="/choose">← Back to methods</a>
+</div>
+{% endblock %}

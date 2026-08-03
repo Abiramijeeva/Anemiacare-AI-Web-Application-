@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body_class %}choose-page{% endblock %}
+{% block content %}
+<div class="choose-hero">
+    <h1 class="choose-h1">Choose Your Method</h1>
+    <p class="choose-subtitle">Select how you want to check your anemia status</p>
+    
+    <div class="method-grid">
+        <a href="/manual" class="method-card manual-method">
+            <div class="method-icon">✏️</div>
+            <h3>Manual Entry</h3>
+            <p>Enter your blood test values</p>
+            <div class="method-overlay">Enter Values →</div>
+        </a>
+        
+        <a href="/upload" class="method-card upload-method">
+            <div class="method-icon">📁</div>
+            <h3>Upload Report</h3>
+            <p>AI reads your PDF/image report</p>
+            <div class="method-overlay">Upload Report →</div>
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block body_class %}result-page{% endblock %}
+{% block content %}
+<div class="results-hero">
+    <h2 class="result-h2">Your AI Diagnosis</h2>
+    
+    <div class="diagnosis-card">
+
+        <!-- BIG SEVERITY TITLE -->
+        <h1 class="main-diagnosis">
+             {{ "Normal" if severity == "Normal" else severity + " Anemia" }}
+        </h1>
+
+        <!-- COLOR GRADED SEVERITY BAR -->
+        <div class="severity-wrapper">
+            <div class="severity-bar">
+                <div class="severity-fill {{ severity|lower }}"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BLOOD METRICS -->
+    <div class="metrics-grid">
+        <div class="metric">
+            <span class="metric-value">{{ "%.1f"|format(hb) }}</span>
+            <span class="metric-label">Hb g/dL</span>
+        </div>
+        <div class="metric">
+            <span class="metric-value">{{ "%.2f"|format(rbc) }}</span>
+            <span class="metric-label">RBC</span>
+        </div>
+        <div class="metric">
+            <span class="metric-value">{{ "%.1f"|format(mcv) }}</span>
+            <span class="metric-label">MCV fL</span>
+        </div>
+        <div class="metric">
+            <span class="metric-value">{{ age }}</span>
+            <span class="metric-label">Age</span>
+        </div>
+    </div>
+
+    <!-- EXPLANATION SECTION -->
+    <div class="results-grid">
+        <div class="result-section full-explanation">
+            <h4>🧠 Complete AI Medical Explanation</h4>
+
+            <div class="question-grid">
+                <div class="question-card active" data-target="what">
+                    💡 What is {{ severity }}?
+                </div>
+
+                <div class="question-card" data-target="symptoms">
+                    🔍 Symptoms
+                </div>
+
+                <div class="question-card" data-target="risks">
+                    ⚠️ Long-term Risks
+                </div>
+
+                <div class="question-card" data-target="diet">
+                    🍛 Indian Diet Plan
+                </div>
+
+                <div class="question-card" data-target="lifestyle">
+                    ✅ Lifestyle Advice
+                </div>
+            </div>
+
+            <div class="answer-container">
+
+                <div class="answer-section active" id="what">
+                    <ul class="ai-points">
+                        {% for point in explanation_what.split('-') %}
+                            {% if point.strip() %}
+                                <li>{{ point.strip() }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="answer-section" id="symptoms">
+                    <ul class="ai-points">
+                        {% for point in explanation_symptoms.split('-') %}
+                            {% if point.strip() %}
+                                <li>{{ point.strip() }}.</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="answer-section" id="risks">
+                    <ul class="ai-points">
+                        {% for point in explanation_risks.split('-') %}
+                            {% if point.strip() %}
+                                <li>{{ point.strip() }}.</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="answer-section" id="diet">
+                    <ul class="ai-points">
+                        {% for point in explanation_diet.split('-') %}
+                            {% if point.strip() %}
+                                <li>{{ point.strip() }}.</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="answer-section" id="lifestyle">
+                    <ul class="ai-points">
+                        {% for point in explanation_lifestyle.split('-') %}
+                            {% if point.strip() %}
+                                <li>{{ point.strip() }}.</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- DOWNLOAD BUTTON -->
+    <form method="POST" action="/download_report" class="download-form">
+        <input type="hidden" name="severity" value="{{ severity }}">
+        <input type="hidden" name="hb" value="{{ hb }}">
+        <input type="hidden" name="rbc" value="{{ rbc }}">
+        <input type="hidden" name="mcv" value="{{ mcv }}">
+        <input type="hidden" name="mch" value="{{ mch }}">
+        <input type="hidden" name="mchc" value="{{ mchc }}">
+        <input type="hidden" name="rdw" value="{{ rdw }}">
+        <input type="hidden" name="age" value="{{ age }}">
+        <input type="hidden" name="explanation_what" value="{{ explanation_what }}">
+        <input type="hidden" name="explanation_symptoms" value="{{ explanation_symptoms }}">
+        <input type="hidden" name="explanation_risks" value="{{ explanation_risks }}">
+        <input type="hidden" name="explanation_diet" value="{{ explanation_diet }}">
+        <input type="hidden" name="explanation_lifestyle" value="{{ explanation_lifestyle }}">
+        <button type="submit" class="download-btn">
+            📥 Download Medical Report (PDF)
+        </button>
+    </form>
+
+    <div class="back-link">
+        <a href="/">← New Analysis</a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const questionCards = document.querySelectorAll('.question-card');
+    const answerSections = document.querySelectorAll('.answer-section');
+
+    questionCards.forEach(card => {
+        card.addEventListener('click', function() {
+
+            const target = this.getAttribute('data-target');
+
+            questionCards.forEach(c => c.classList.remove('active'));
+            answerSections.forEach(section => section.classList.remove('active'));
+
+            this.classList.add('active');
+
+            const targetSection = document.getElementById(target);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+        });
+    });
+
+    if (questionCards.length > 0) {
+        questionCards[0].click();
+    }
+
+});
+</script>
+
+{% endblock %}

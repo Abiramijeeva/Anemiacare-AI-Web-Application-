@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AnemiaCare AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body  class="{% block body_class %}{% endblock %}">
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">🩸</span>
+            <span class="brand-text">AnemiaCare AI</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link">Home</a></li>
+            <li><a href="{{ url_for('about') }}" class="nav-link">About</a></li>
+            <li><a href="/choose" class="nav-link">Check Anemia</a></li>
+            <li><a href="/upload" class="nav-link">Upload Report</a></li>
+            
+        </ul>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+    // Mobile menu JavaScript (code from above)
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+    });
+    </script>
+</body>
+</html>

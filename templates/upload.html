@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block body_class %}upload-page{% endblock %}
+{% block content %}
+<div class="upload-hero">
+    <h2>Upload Your CBC Report</h2>
+    <p class="upload-subtitle">Drag & drop your PDF or image report (AI auto-extracts values)</p>
+    
+    <form method="POST" enctype="multipart/form-data" class="upload-dropzone">
+        <div class="dropzone" id="dropzone">
+            <div class="dropzone-content">
+                <div class="upload-icon">📁</div>
+                <p><strong>Drag & drop your report here</strong></p>
+                <p>or click to browse PDF/JPG/PNG files</p>
+                <input type="file" id="fileInput" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
+            </div>
+            <div class="dropzone-footer">
+                <div class="upload-inputs">
+                    <input type="number" step="any" name="age" placeholder="Your Age" required>
+                    <select name="gender" class="select-input" required>
+                        <option value="">Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+                <button type="submit" class="analyze-btn">Analyze Report</button>
+            </div>
+        </div>
+    </form>
+
+    {% if show_fix %}
+    <div class="fix-section">
+        <h3>🔧 Some values not detected automatically</h3>
+        <p>AI found: {{ extracted|tojson }}</p>
+        <form method="POST">
+            <input type="hidden" name="manual_fix" value="1">
+            <input type="hidden" name="age" value="{{ age }}">
+            <input type="hidden" name="gender" value="{{ gender }}">
+            {% for key in missing %}
+                <input type="number" step="any" name="{{ key }}" placeholder="{{ key.upper() }} *" required>
+            {% endfor %}
+            {% for key, value in extracted.items() %}
+                {% if key not in missing %}
+                    <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="analyze-btn">Continue Analysis</button>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if message %}
+        <div class="error">{{ message }}</div>
+    {% endif %}
+    
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const inputs = dropzone.querySelectorAll('input[type="number"], select');
+
+    // Prevent file input trigger on input fields
+    inputs.forEach(input => {
+        input.addEventListener('click', (e) => e.stopPropagation());
+        input.addEventListener('focus', (e) => e.stopPropagation());
+    });
+
+    // File input click handler (only dropzone content area)
+    const dropzoneContent = dropzone.querySelector('.dropzone-content');
+    dropzoneContent.addEventListener('click', (e) => {
+        if (!e.target.closest('input')) {
+            fileInput.click();
+        }
+    });
+
+    // Drag & drop handlers
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('drag-over');
+    });
+    
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('drag-over');
+    });
+    
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-over');
+        fileInput.files = e.dataTransfer.files;
+    });
+});
+</script>
+{% endblock %} 
